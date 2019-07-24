@@ -6,27 +6,20 @@ module.exports = function (app) {
   const mongooseClient = app.get('mongooseClient');
   const { Schema } = mongooseClient;
   const reports = new Schema({
-    CameraID: {
+    cameraID: {
       type: String,
       required: true,
     },
-    label: String,
+    // label: String,
     name: String,
-    confidence: Number,
+    count: Number,
     datetime: Date,
     location: {
-      type: {
-        type: String,
-        enum: ['Point'],
-        required: true,
-      },
-      coordinates: {
-        type: [Number],
-        required: true,
-      },
+      type: [Number],
+      required: true,
     },
   }, {
-    timestamps: true
+    timestamps: false
   });
 
   return mongooseClient.model('Database', reports);
