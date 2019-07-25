@@ -3,7 +3,7 @@ const createService = require('feathers-mongoose');
 const createModel = require('../../models/reports.model');
 const hooks = require('./reports.hooks');
 
-module.exports = function (app) {
+module.exports = function(app) {
   const Model = createModel(app);
   // const paginate = app.get('paginate');
 
@@ -12,7 +12,7 @@ module.exports = function (app) {
     paginate: {
       default: 50,
       max: 500,
-    }
+    },
   };
 
   // Initialize our service with any options it requires
@@ -30,6 +30,30 @@ module.exports = function (app) {
     before: {
       async find(context) {
         // console.log(context.params.query);
+        // if (context.params.query.listview === 'true') {
+        //   delete context.params.query.listview;
+        //   // context.params.query = { cameraID: '1001' };
+
+        //   const results = await Model.aggregate([
+        //     { $match: {cameraID: '1001' } },
+        //     // {
+        //     //   $match: {
+        //     //     datetime: { $gte: new Date('2019-08-22T16:30:00.000Z') },
+        //     //   },
+        //     // },
+        //     {
+        //       $group: {
+        //         _id: '$name',
+        //         // location: { $first: '$location' },
+        //         // datetime: { $first: '$datetime' },
+        //         total: { $sum: '$count' },
+        //       },
+        //     },
+        //   ]);
+        //   context.result = results;
+
+        //   return context;
+        // }
         if (context.params.query.dashboard === 'true') {
           const { Model } = context.app.service('reports');
           // context.params.query = { cameraID: '1001', count: 1 };
@@ -37,16 +61,31 @@ module.exports = function (app) {
           delete context.params.query.$limit;
 
           const results = await Model.aggregate([
+            // { $match: { name: "cup" } },
             {
-              $group: { _id: '$cameraID' }
-            }
+              $match: {
+                datetime: { $gte: new Date('2019-08-22T16:30:00.000Z') },
+              },
+            },
+            // {
+            //   "$match": {
+            //     "date": { "$lte": start, "$gte": end }
+            // },
+            {
+              $group: {
+                _id: '$cameraID',
+                location: { $first: '$location' },
+                datetime: { $first: '$datetime' },
+                total: { $sum: '$count' },
+              },
+            },
           ]);
           context.result = results;
 
           return context;
         }
-      }
-    }
+      },
+    },
   });
 
   service.hooks(hooks);

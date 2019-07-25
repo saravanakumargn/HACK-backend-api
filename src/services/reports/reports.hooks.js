@@ -1,4 +1,3 @@
-
 const { disallow } = require('feathers-hooks-common');
 const { disablePagination } = require('feathers-hooks-common');
 
@@ -12,7 +11,7 @@ module.exports = {
     create: [disallow()],
     update: [disallow()],
     patch: [disallow()],
-    remove: [disallow()]
+    remove: [disallow()],
   },
 
   after: {
@@ -22,7 +21,7 @@ module.exports = {
     create: [],
     update: [],
     patch: [],
-    remove: []
+    remove: [],
   },
 
   error: {
@@ -32,6 +31,6 @@ module.exports = {
     create: [],
     update: [],
     patch: [],
-    remove: []
-  }
+    remove: [],
+  },
 };
